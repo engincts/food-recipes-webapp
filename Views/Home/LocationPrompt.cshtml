@@ -1,0 +1,64 @@
+﻿@{
+    ViewBag.Title = "Location Prompt";
+}
+
+<h2>Location Prompt</h2>
+<p>Would you like to share your location with us?</p>
+
+<button onclick="requestLocation()">Share Location</button>
+<button onclick="skipLocation()">Skip</button>
+
+<script>
+    function requestLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                function (position) {
+                    var latitude = position.coords.latitude;
+                    var longitude = position.coords.longitude;
+
+                    fetch('/Home/SetLocation', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'RequestVerificationToken': '@Html.AntiForgeryToken()'
+                        },
+                        body: JSON.stringify({
+                            Latitude: latitude,
+                            Longitude: longitude
+                            
+                        })
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log('Location sent to server:', data);
+                            window.location.href = '@Url.Action("Index", "Home")'; // Redirect to index page
+                        })
+                        .catch(error => console.error('Error sending location:', error));
+                },
+                function (error) {
+                    console.error('Error getting location:', error);
+                    alert('Unable to retrieve your location.');
+                }
+            );
+        } else {
+            alert('Geolocation is not supported by this browser.');
+        }
+    }
+
+
+    function skipLocation() {
+        fetch('/Home/SkipLocation', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'RequestVerificationToken': '@Html.AntiForgeryToken()'
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Location skip confirmed:', data);
+                window.location.href = '@Url.Action("Index", "Home")'; // Redirect to index page
+            })
+            .catch(error => console.error('Error skipping location:', error));
+    }
+</script>

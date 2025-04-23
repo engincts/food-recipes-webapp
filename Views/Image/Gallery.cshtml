@@ -1,0 +1,24 @@
+﻿@model List<YemekTarifleri.Models.ImageViewModel>
+
+<div class="container">
+    <h3 class="menu-title">Recipes</h3>
+    <div class="row row-cols-1 row-cols-md-2 g-4">
+        @foreach (var image in Model)
+        {
+            foreach (var recipe in image.recipes)
+            {
+                <div class="col">
+                    <div class="card">
+                        <img width="*" height="250" class="card-img-top" src="@Url.Action("GetImage", "Recipe", new { imageID = image.ImageId })" alt="@recipe.RecipeName" />
+                        <div class="card-body">
+                            <h5 class="card-title">@recipe.RecipeName</h5>
+                            <p class="card-text">Rating: @recipe.Rating</p>
+                            <p class="card-text">@recipe.Description</p>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+</div>
+    

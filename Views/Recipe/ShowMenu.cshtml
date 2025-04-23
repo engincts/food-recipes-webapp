@@ -1,0 +1,120 @@
+﻿@model List<YemekTarifleri.Db.Recipe>
+
+
+<style>
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+
+    th, td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+    }
+
+    th {
+        background-color: #f2f2f2;
+    }
+
+    .ingredient-list {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    .ingredient-item {
+        margin-bottom: 5px;
+    }
+</style>
+
+<h1>Recipes</h1>
+
+<table class="table table-striped table-hover table-responsive ">
+    <thead>
+        <tr>
+            <th>Recipe Name</th>
+            <th>Description</th>
+            <th>Prep Time</th>
+            <th>Cook Time</th>
+            <th>Servings</th>
+            <th>Rating</th>
+            <th>Steps</th>
+            <th>Ingredients</th>
+            <th>Delete</th>
+        </tr>
+    </thead>
+    <tbody>
+        
+        @foreach (var recipe in Model)
+        {
+            <tr id="recipe-row-@recipe.RecipeId">
+                <td>@recipe.RecipeName</td>
+                <td>@recipe.Description</td>
+                <td>@recipe.PrepTime</td>
+                <td>@recipe.CookTime</td>
+                <td>@recipe.Servings</td>
+                <td>@recipe.Rating</td>
+                <td>@recipe.Steps</td>
+                <td>
+                    <button class="show-button dropdown-toggle btn-primary" data-bs-toggle="button" data-recipeid="@recipe.RecipeId" type="button">Show Ingredients</button>
+                </td>
+                <td><button class="delete-button btn-danger" data-recipeid="@recipe.RecipeId" type="button">Delete</button></td>
+            </tr>
+            <tr id="Ingredients-row-@recipe.RecipeId">
+                <td colspan="7">
+                    <div id="@string.Format("Ingredients{0}", recipe.RecipeId)">
+                    </div>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<script>
+    $(document).ready(function () {
+        $(".show-button").click(function () {
+            var recipeId = $(this).data("recipeid");
+            $.ajax({
+                url: '/Recipe/GetIngredients',
+                type: 'POST',
+                data: { recipeId: recipeId },
+                success: function (items) {
+                    var html = '<ul>';
+                    for (var inx = 0; inx < items.length; inx++) {
+                        var item = items[inx];
+                        html += '<li>' + item.Name + item.Amount + item.Unit +'</li>'
+                     
+                    }
+
+                    html += '</ul>';
+
+                    $('#Ingredients' + recipeId).html(html);
+                },
+                error: function (err) {
+                    console.error("Failed to show ingredients:", err);
+                }
+            });
+        });
+
+        $(".delete-button").click(function () {
+            var RecipeId = $(this).data("recipeid");
+            $.ajax({
+                url: '/Recipe/Delete',
+                type: 'POST',
+                data: { RecipeId: RecipeId },
+                success: function (result) {
+                    
+                    $('#recipe-row-' + RecipeId).remove();
+                    $('#Ingredients-row-'+RecipeId).remove();
+                                 
+                },
+                
+                error: function (err) {
+                    console.error("Failed to delete recipe:", err);
+                }
+            });
+        });
+    });
+</script>

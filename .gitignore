@@ -1,0 +1,18 @@
+# Build dosyaları
+bin/
+obj/
+
+# Visual Studio ayar dosyaları
+.vs/
+*.user
+*.suo
+
+# Kişisel ayarlar
+.vscode/
+*.log
+
+# Yayınlanmış NuGet paketleri
+*.nupkg
+
+# Environment dosyası
+.env

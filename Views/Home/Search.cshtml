@@ -1,0 +1,21 @@
+﻿@model IEnumerable<YemekTarifleri.Models.RecipeViewModel>
+
+@{
+    ViewData["Title"] = "Search Results";
+}
+
+<h1>Search Results</h1>
+
+@if (!Model.Any())
+{
+    <p>No results found for your query.</p>
+}
+else
+{
+    <ul>
+        @foreach (var item in Model)
+        {
+            <li>@Html.DisplayFor(modelItem => item.RecipeName)</li>
+        }
+    </ul>
+}

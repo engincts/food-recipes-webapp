@@ -1,0 +1,134 @@
+﻿@model RecipeViewModel
+
+<style>
+    .grid-container {
+        display: grid;
+        grid-template-columns: 1fr 2fr;
+        gap: 5px;
+        align-items: center;
+    }
+
+    .ingredients-container {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 5px;
+        margin-top: 20px;
+    }
+
+    .custom-input > input, .custom-input1 {
+        width: 100%;
+        max-width: 400px;
+    }
+
+    textarea.custom-input1 {
+        width: 100%;
+        max-width: 400px;
+        height: 100px;
+    }
+</style>
+
+<form class="grid-container custom-input" action="Create" method="post" enctype="multipart/form-data">
+    <label asp-for="RecipeName"></label>
+    <input asp-for="RecipeName" />
+
+    <label asp-for="Description"></label>
+    <input asp-for="Description" />
+
+    <label asp-for="PrepTime"></label>
+    <input placeholder="Write in minutes" asp-for="PrepTime" />
+
+    <label asp-for="CookTime"></label>
+    <input placeholder="Write in minutes" asp-for="CookTime" />
+
+    <label asp-for="Servings"></label>
+    <input asp-for="Servings" />
+
+    <label asp-for="Rating"></label>
+    <input placeholder="Give a score between 1-5" asp-for="Rating" />
+
+    <label asp-for="Steps"></label>
+    <textarea class="custom-input1" asp-for="Steps"></textarea>
+
+    <label asp-for="ImageFile"></label>
+    <input id="imageFile" name="ImageFile" asp-for="ImageFile" type="file">
+
+    <hr />
+
+    <div class="ingredients-container" id="ingredients-container">
+        <div class="ingredient">
+            <label asp-for="Ingredients[0].IngredientId">Ingredient</label>
+            <select asp-for="Ingredients[0].IngredientId">
+                <option value="1">Onion</option>
+                <option value="2">Tomatoes</option>
+                <option value="3">Egg</option>
+                <option value="4">Salt</option>
+                <option value="5">Olive Oil</option>
+                <option value="6">Milk</option>
+                <option value="7">Starch</option>
+            </select>
+        </div>
+        <div>
+            <label asp-for="Ingredients[0].Amount">Amount</label>
+            <input asp-for="Ingredients[0].Amount" />
+        </div>
+        <div>
+            <label asp-for="Ingredients[0].UnitId">Unit</label>
+            <select asp-for="Ingredients[0].UnitId">
+                <option value="1">Piece</option>
+                <option value="2">Water Glass</option>
+                <option value="3">Cup</option>
+                <option value="4">Teaspoon</option>
+                <option value="5">Tablespoon</option>
+                <option value="6">Gram</option>
+                <option value="7">Kilo</option>
+            </select>
+        </div>
+    </div>
+
+    <button type="button" id="addIngredient">Add Ingredient</button>
+    <button type="submit">Submit</button>
+</form>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#addIngredient').on('click', function () {
+                var ingredientsDiv = $("#ingredients-container");
+                var ingredientCount = ingredientsDiv.children('.ingredient').length;
+
+                var newIngredient = `
+                            <div class="ingredient">
+                                <label for="Ingredients_${ingredientCount}__IngredientId">Ingredient</label>
+                                <select name="Ingredients[${ingredientCount}].IngredientId" id="Ingredients_${ingredientCount}__IngredientId">
+                                    <option value="1">Onion</option>
+                                    <option value="2">Tomatoes</option>
+                                    <option value="3">Egg</option>
+                                    <option value="4">Salt</option>
+                                    <option value="5">Olive Oil</option>
+                                    <option value="6">Milk</option>
+                                    <option value="7">Starch</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="Ingredients_${ingredientCount}__Amount">Amount</label>
+                                <input name="Ingredients[${ingredientCount}].Amount" id="Ingredients_${ingredientCount}__Amount" />
+                            </div>
+                            <div>
+                                <label for="Ingredients_${ingredientCount}__UnitId">Unit</label>
+                                <select name="Ingredients[${ingredientCount}].UnitId" id="Ingredients_${ingredientCount}__UnitId">
+                                    <option value="1">Piece</option>
+                                    <option value="2">Water Glass</option>
+                                    <option value="3">Cup</option>
+                                    <option value="4">Teaspoon</option>
+                                    <option value="5">Tablespoon</option>
+                                    <option value="6">Gram</option>
+                                    <option value="7">Kilo</option>
+                                </select>
+                            </div>
+                        `;
+
+                ingredientsDiv.append(newIngredient);
+            });
+        });
+    </script>
+}

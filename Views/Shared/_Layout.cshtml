@@ -1,0 +1,153 @@
+﻿<!DOCTYPE html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - YemekTarifleri</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/YemekTarifleri.styles.css" asp-append-version="true" />
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container-fluid">
+                
+                <a class="navbar-brand d-flex align-items-center" asp-area="" asp-controller="Home" asp-action="Index">
+                    <img src="https://img.icons8.com/ios-filled/50/000000/menu.png" alt="Menu" role="button" data-bs-toggle="dropdown" style="width: 20px; margin-right: 10px;">
+                    YemekTarifleri
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        @if (User?.Identity != null && User.Identity.IsAuthenticated)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            </li>
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Recipe" asp-action="Menu">Add Food</a>
+                                </li>
+                            }
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle text-dark" href="#" id="moreDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Foods
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="moreDropdown">
+                                    <li class="dropdown-submenu">
+                                        <a class="nav-link dropdown-toggle text-dark" href="#" id="Dishes" aria-expanded="false" data-bs-toggle="dropdown" role="button">Dishes</a>
+                                        <ul aria-labelledby="Dishes" class="dropdown-menu">
+                                            <li><a class="dropdown-item" asp-area="" asp-controller="Recipe" asp-action="Breakfast">Breakfast</a></li>
+                                            <li><a class="dropdown-item" asp-area="" asp-controller="Recipe" asp-action="Lunch">Lunch</a></li>
+                                            <li><a class="dropdown-item" asp-area="" asp-controller="Recipe" asp-action="Dinner">Dinner</a></li>
+                                        </ul>
+                                    </li>
+                                    <li><a class="dropdown-item" asp-area="" asp-controller="Home" asp-action="FoodProducts">Food Products</a></li>
+                                    <li><a class="dropdown-item" asp-area="" asp-controller="Home" asp-action="Beverages">Beverages</a></li>
+                                </ul>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Destination" asp-action="Destinations">Destinations</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Recipe" asp-action="ShowMenu">Show Menu</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Recipe" asp-action="IngredientTable">Ingredient Table</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Image" asp-action="Gallery">Gallery</a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle text-dark" href="#" id="moredropdownn" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    More
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="moredropdownn">
+                                    <li><a class="dropdown-item" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a></li>
+                                    @* <li><a class="dropdown-item" asp-area="" asp-controller="Recipe" asp-action="Detail">Detail</a></li> *@
+                                    <li><a class="dropdown-item" asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
+                                </ul>
+                            </li>
+
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Login">Login</a>
+                            </li>
+                        }
+                    </ul>
+                    <!-- Search form and Logout button aligned to the far right -->
+                    @if (User?.Identity != null && User.Identity.IsAuthenticated)
+                    {
+                        <div class="d-flex  align-items-center">
+                            <a  asp-area="" asp-controller="Account" asp-action="Profile" class="example d-flex me-3">
+                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRNuRKRBqKaTeBBc1IE1vrdncCY1NOWUE9FEQ&s" style="width: 20px; margin-right: 10px; " />
+                            </a>
+                            <form class="example d-flex me-3" action="/Home/Search" method="post" style="max-width:300px">
+                                <input type="text" placeholder="Search.." name="search" class="form-control me-2" />
+                                <button type="submit" id="search" class="btn btn-outline-success">
+                                    <img src="https://static.vecteezy.com/system/resources/thumbnails/001/504/972/small/search-icon-free-vector.jpg" alt="Search" style="width: 20px; height: 20px;" />
+                                </button>
+                            </form>
+
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Logout">Logout</a>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            @if (TempData["error"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    @TempData["error"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+        </nav>
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2024 - YemekTarifleri - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+@* <script>
+    $(document).ready(function () {
+        $("#search").click(function (e) {
+            e.preventDefault();
+            var search = $("input[name='search']").val();
+            $.ajax({
+                url: '@Url.Action("Search", "Home")',
+                type: 'GET',
+                data: { search: search },
+                success: function (response) {
+                    // Handle the response from the server
+                    // For example, you could display the search results on the page
+                    console.log(response);
+                },
+                error: function () {
+                    // Handle errors
+                    alert("An error occurred.");
+                }
+            });
+        });
+    });
+</script>
+ *@

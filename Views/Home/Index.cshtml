@@ -1,0 +1,301 @@
+﻿@model List<YemekTarifleri.Models.RecipeViewModel>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu Screen</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f9fa;
+        }
+
+        .menu-title {
+            text-align: center;
+            margin: 20px 0;
+            font-size: 2.5rem;
+            color: #343a40;
+        }
+
+        .carousel {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .carousel-item img {
+            width: 100%;
+            height: 400px; /* Set a fixed height */
+            object-fit: cover; /* Ensures the image covers the area without distortion */
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .menu-description {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 1.2rem;
+            color: #6c757d;
+        }
+
+        .announcement {
+            text-align: right;
+        }
+
+        #show {
+            display: block;
+            width: 200px;
+            margin: 20px auto;
+            padding: 10px;
+            font-size: 1rem;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+            #show:hover {
+                background-color: #0056b3;
+            }
+    </style>
+</head>
+
+<body>
+    <div class="container row">
+        <div class="menu-title">Our Delicious Menu</div>
+
+        <div id="carouselExampleIndicators" class="carousel slide col-6" data-bs-ride="carousel" data-bs-interval="3000">
+            <div class="carousel-indicators">
+                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
+            </div>
+            <div id="img" class="carousel-inner">
+                <div class="carousel-item active" data-recipe-index="0">
+                    <img src="https://www.kevserinmutfagi.com/wp-content/uploads/2018/07/mezeli_yemek_menusu1-600x400.jpg" class="d-block w-100" alt="Delicious food menu with various dishes">
+                    <div class="menu-description">Delicious food menu with various dishes</div>
+                </div>
+                <div class="carousel-item" data-recipe-index="1">
+                    <img src="https://www.kevserinmutfagi.com/wp-content/uploads/2012/02/falafel1-1-600x400.jpg" class="d-block w-100" alt="Falafel">
+                    <div class="menu-description">Tasty Falafel</div>
+                </div>
+                <div class="carousel-item" data-recipe-index="2">
+                    <img src="https://www.etstur.com/letsgo/wp-content/uploads/2023/10/tepe-2.jpg" style="width:600;height:400" class="d-block w-100" alt="Mixed Dish">
+                    <div class="menu-description">A delightful mixed dish</div>
+                </div>
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
+
+        <div class="vr" style="background-color: black; color: black; width: 2px;"></div>
+
+        <div class="col-6 col-md-4">
+            <h3 class="col-12 col-md-8">Announcements</h3>
+            <div class="row mt-4">
+                <div class="col-12 col-md-4">
+                    <div class="announcement">
+                        <img class="img-fluid" src="image-url.jpg" alt="Announcement Image" />
+                        <h4 class="announcement-Title">Title of Announcement</h4>
+                        <div class="announcement-Time">Date: July 22, 2024</div>
+                        <div class="announcement-description">
+                            Detail: This is the detail of the announcement. Here you can include more information.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <section>
+        <h3 class="menu-title">Recipes</h3>
+        <div id="recipeCarousel" class="col carousel slide" data-bs-ride="carousel" data-bs-interval="3000">
+            <div class="carousel-inner" id="Recipes">
+                @{
+                    var chunkSize = 5;
+                    for (int i = 0; i < Model.Count; i += chunkSize)
+                    {
+                        var isActive = i == 0 ? "active" : "";
+                        <div class="carousel-item @isActive">
+                            <div class="row">
+                                @for (int j = i; j < i + chunkSize && j < Model.Count; j++)
+                                {
+                                    <div class="col-2">
+                                        <img width="500" height="150" src="@Url.Action("GetImage", "Home", new { imageID = Model[j].ImageId })" alt="@Model[j].RecipeName" class="d-block w-100" data-recipe-index="@j" />
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#recipeCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#recipeCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
+    </section>
+
+    <section>
+        <h3 class="menu-title">Best Recipes</h3>
+        <div class="col carousel slide">
+            <div class="carousel-inner" id="RecipesByRating">
+                @{
+                    var sortedListByRating = this.Model.OrderByDescending(R => R.Rating).ToList();
+                    var size = 5;
+                    for (int i = 0; i < sortedListByRating.Count; i += size)
+                    {
+                        var isActive = i == 0 ? "active" : "";
+                        <div class="carousel-item @isActive">
+                            <div class="row">
+                                @for (int j = i; j < i + size && j < sortedListByRating.Count; j++)
+                                {
+                                    <div class="col-md-4">
+                                        <div class="card mb-3">
+                                            <div class="card-body">
+                                                <img height="100" src="/Home/GetImage?imageId=@sortedListByRating[j].ImageId" />
+                                                <h5 class="card-title">@sortedListByRating[j].RecipeName</h5>
+                                                <p class="card-text">Rating: @sortedListByRating[j].Rating</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#RecipesByRating" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#RecipesByRating" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
+    </section>
+    <section>
+        <h3 class="menu-title">Easiest Recipes</h3>
+        <div class="col carousel slide">
+            <div class="carousel-inner" id="RecipesByRating">
+                @{
+                    var sortedListByTotalTime = this.Model.OrderByDescending(R => R.TotalTime).ToList();
+
+                    var chunkSizee = 5;
+                    for (int i = 0; i < sortedListByTotalTime.Count; i += chunkSizee)
+                    {
+                        var isActive = i == 0 ? "active" : "";
+                        <div class="carousel-item @isActive">
+                            <div class="row">
+                                @for (int j = i; j < i + chunkSizee && j < sortedListByTotalTime.Count; j++)
+                                {
+                                    <div class="col-md-4">
+                                        <div class="card mb-3">
+                                            <div class="card-body">
+                                                <img height="100" src="/Home/GetImage?imageId=@sortedListByTotalTime[j].ImageId" />
+                                                <h5 class="card-title">@sortedListByTotalTime[j].RecipeName</h5>
+                                                <p class="card-text">Total Time: @sortedListByTotalTime[j].TotalTime minutes</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#RecipesByRating" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#RecipesByRating" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
+    </section>
+    <script>
+        $(document).ready(function () {
+            $("#img .carousel-item, #Recipes img, #RecipesByRating img, #RecipesByTotalTime img").click(function () {
+                var recipeIndex = $(this).data("recipe-index");
+                var recipes = @Html.Raw(Json.Serialize(Model));
+                var RecipeName = recipes[recipeIndex].RecipeName;
+
+                $.ajax({
+                    url: "/Home/Search",
+                    method: "POST",
+                    data: { Search: RecipeName },
+                    success: function (response) {
+                        window.location.href = "/Recipe/Detail?search=" + RecipeName;
+                    },
+                    error: function () {
+                        alert("An error occurred.");
+                    }
+                });
+            });
+        });
+    </script>
+   @*  <script>
+        function requestLocationForNewUser() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    function (position) {
+                        var latitude = position.coords.latitude;
+                        var longitude = position.coords.longitude;
+
+                        // Send the coordinates to the server via AJAX
+                        fetch('/Home/SetLocation', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'RequestVerificationToken': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                            },
+                            body: JSON.stringify({
+                                Latitude: latitude,
+                                Longitude: longitude
+                            })
+                        })
+                            .then(response => response.json())
+                            .then(data => {
+                                console.log('Location sent to server:', data);
+                                document.getElementById('createUserForm').submit(); // Assuming you have a form with id 'createUserForm'
+                            })
+                            .catch(error => {
+                                console.error('Error sending location:', error);
+                                document.getElementById('createUserForm').submit(); // Continue form submission even if location fails
+                            });
+                    },
+                    function (error) {
+                        console.error('Error getting location:', error);
+                        document.getElementById('createUserForm').submit(); // Continue form submission if location cannot be retrieved
+                    }
+                );
+            } else {
+                alert('Geolocation is not supported by this browser.');
+                document.getElementById('createUserForm').submit(); // Continue form submission if geolocation is not supported
+            }
+        }
+
+        // Call the function when the page loads or when creating a new user
+        window.onload = function () {
+            requestLocationForNewUser();
+        };
+    </script> *@
+
+
+</body>
+
+</html>

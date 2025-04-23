@@ -1,0 +1,23 @@
+﻿@model YemekTarifleri.Models.RecipeViewModel
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@Model.RecipeName - Recipe Details</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+</head>
+<body>
+    <div class="container mt-4">
+        <img width="*" height="150" src="@Url.Action("GetImage", "Recipe", new { imageID = Model.ImageId })" alt="@Model.RecipeName" />
+        <h1>@Model.RecipeName</h1>
+        <p><strong>Preparation Time:</strong> @Model.PrepTime minutes</p>
+        <p><strong>Cook Time:</strong> @Model.CookTime minutes</p>
+        <p><strong>Servings:</strong> @Model.Servings people</p>
+        <p><strong>Rating:</strong> @Model.Rating stars</p>
+        <p><strong>Description:</strong> @Model.Description</p>
+        <p><strong>Steps:</strong> @Model.Steps</p>
+    </div>
+</body>
+</html>

@@ -1,0 +1,42 @@
+﻿@model List<YemekTarifleri.Models.RecipeViewModel>
+
+<style>
+    .recipe-container {
+        border: dashed black 1px;
+        width: 250px;
+        padding: 10px;
+        margin-bottom: 10px;
+    }
+</style>
+
+<section id="app">
+    <div class="row card">
+        <div v-for="recipe in recipes" :key="recipe.RecipeId" :id="objectOfAttrs.id" :class="objectOfAttrs.class" :style="objectOfAttrs.style" class="recipe-container col">
+            <h3>{{ recipe.Country }}</h3>
+            <h5>{{ recipe.RecipeName }}</h5>
+            <div class="col-sm">
+                <div v-for="ingredient in recipe.Ingredients" :key="ingredient.IngredientId">
+                    <p>{{ ingredient.Name }}: {{ ingredient.Amount }} {{ ingredient.Unit }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+<script>
+    const app = Vue.createApp({
+        data() {
+            return {
+                recipes: @Html.Raw(Json.Serialize(Model)),
+                objectOfAttrs: {
+                    id: 'container',
+                    class: 'wrapper',
+                    style: 'background-color:green'
+                }
+            }
+        }
+    })
+
+    app.mount('#app')
+</script>

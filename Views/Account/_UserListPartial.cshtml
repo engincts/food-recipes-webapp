@@ -1,0 +1,21 @@
+﻿@model IEnumerable<UserLoginModel>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Username</th>
+            <th>Email</th>
+            <!-- Diğer sütunlar -->
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>@user.UserName</td>
+                <td>@user.Email</td>
+                
+            </tr>
+        }
+    </tbody>
+</table>

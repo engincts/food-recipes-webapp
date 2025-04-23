@@ -1,0 +1,300 @@
+﻿@model List<YemekTarifleri.Models.RecipeViewModel>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Recipes</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        button {
+            width: 72px;
+            height: 38px;
+        }
+
+        .center-button {
+            display: flex;
+            justify-content: center;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        .ingredient-list {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .ingredient-item {
+            margin-bottom: 5px;
+        }
+
+        .img-thumbnail {
+            width: 100px; /* Adjust this value as needed */
+            height: auto;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Recipes</h1>
+        <button class="filter-button btn btn-info" id="filter-button">Filter</button>
+
+
+        @foreach (var recipe in Model)
+        {
+            <div class="recipe mb-4" data-recipe-id="@recipe.RecipeId">
+                <img width="500" height="150" src="@Url.Action("GetImage", "Recipe", new { imageID = recipe.ImageId })" alt="@recipe.RecipeName" />
+                <p>Recipe Description: @recipe.Description</p>
+                <p>Prep Time: @recipe.PrepTime mins</p>
+                <p>Cook Time: @recipe.CookTime mins</p>
+                <p>Servings: @recipe.Servings</p>
+                <p>Rating: @recipe.Rating</p>
+                <textarea style="width: 100%;">Steps: @recipe.Steps</textarea>
+
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Ingredient Name</th>
+                            <th>Amount</th>
+                            <th>Unit</th>
+                            <th>Delete</th>
+                            <th>Update</th>
+                        </tr>
+                    </thead>
+                    <tbody id="cntIngredientBody-@recipe.RecipeId">
+                        @foreach (var ingredient in recipe.Ingredients)
+                        {
+                            <tr id="ingredient-row-@ingredient.RecipeIngredientId">
+                                <td class="Name">@ingredient.Name</td>
+                                <td class="Amount">@ingredient.Amount</td>
+                                <td class="Unit">@ingredient.Unit</td>
+                                <td>
+                                    <button class="delete-button btn btn-danger" data-id="@ingredient.RecipeIngredientId" type="button">Delete</button>
+                                </td>
+                                <td>
+                                    <button class="update-button btn btn-primary" data-id="@ingredient.RecipeIngredientId" type="button">Update</button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                <div class="ingredient-addition">
+                    <table class="table table-striped">
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <select id="new-ingredient-id" class="form-control">
+                                        <option value="1">Onion</option>
+                                        <option value="2">Tomatoes</option>
+                                        <option value="3">Egg</option>
+                                        <option value="4">Salt</option>
+                                        <option value="5">Olive Oil</option>
+                                        <option value="6">Milk</option>
+                                        <option value="7">Starch</option>
+                                    </select>
+                                </td>
+                                <td><input id="new-amount" class="form-control" type="text" placeholder="Amount" /></td>
+                                <td>
+                                    <select id="new-unit-id" class="form-control">
+                                        <option value="1">Piece</option>
+                                        <option value="2">Water Glass</option>
+                                        <option value="3">Cup</option>
+                                        <option value="4">Teaspoon</option>
+                                        <option value="5">Tablespoon</option>
+                                        <option value="6">Gram</option>
+                                        <option value="7">Kilo</option>
+                                    </select>
+                                </td>
+                                <td colspan="2" class="center-button">
+                                    <button class="add-button btn btn-success" type="button">Add</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        }
+
+        <h2>Debug Information</h2>
+        <pre>@Html.Raw(Json.Serialize(Model))</pre>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            $(".delete-button").click(function () {
+                var recipeIngredientId = $(this).data("id");
+                $.ajax({
+                    url: '@Url.Action("DeleteIngredient", "Recipe")',
+                    type: 'POST',
+                    data: { recipeIngredientId: recipeIngredientId },
+                    success: function (result) {
+                        if (result.success) {
+                            $('#ingredient-row-' + recipeIngredientId).remove();
+                        } else {
+                            alert(result.message);
+                        }
+                    },
+                    error: function (err) {
+                        console.error("Failed to delete ingredient:", err);
+                    }
+                });
+            });
+
+            $(document).on('click', '.update-button', function () {
+                var recipeIngredientId = $(this).data("id");
+                var row = $('#ingredient-row-' + recipeIngredientId);
+
+                // Convert spans to input fields and select elements
+                var currentName = row.find('.Name').text();
+                var currentAmount = row.find('.Amount').text();
+                var currentUnit = row.find('.Unit').text();
+
+                row.find('.Name').html(`<select class="edit-name form-control">
+                                                    <option value="Onion" ${currentName === 'Onion' ? 'selected' : ''}>Onion</option>
+                                                    <option value="Tomatoes" ${currentName === 'Tomatoes' ? 'selected' : ''}>Tomatoes</option>
+                                                    <option value="Egg" ${currentName === 'Egg' ? 'selected' : ''}>Egg</option>
+                                                    <option value="Salt" ${currentName === 'Salt' ? 'selected' : ''}>Salt</option>
+                                                    <option value="Olive Oil" ${currentName === 'Olive Oil' ? 'selected' : ''}>Olive Oil</option>
+                                                    <option value="Milk" ${currentName === 'Milk' ? 'selected' : ''}>Milk</option>
+                                                    <option value="Starch" ${currentName === 'Starch' ? 'selected' : ''}>Starch</option>
+                                                </select>`);
+                row.find('.Amount').html(`<input type="text" class="edit-amount form-control" value="${currentAmount}">`);
+                row.find('.Unit').html(`<select class="edit-unit form-control">
+                                                    <option value="Piece" ${currentUnit === 'Piece' ? 'selected' : ''}>Piece</option>
+                                                    <option value="Water Glass" ${currentUnit === 'Water Glass' ? 'selected' : ''}>Water Glass</option>
+                                                    <option value="Cup" ${currentUnit === 'Cup' ? 'selected' : ''}>Cup</option>
+                                                    <option value="Teaspoon" ${currentUnit === 'Teaspoon' ? 'selected' : ''}>Teaspoon</option>
+                                                    <option value="Tablespoon" ${currentUnit === 'Tablespoon' ? 'selected' : ''}>Tablespoon</option>
+                                                    <option value="Gram" ${currentUnit === 'Gram' ? 'selected' : ''}>Gram</option>
+                                                    <option value="Kilo" ${currentUnit === 'Kilo' ? 'selected' : ''}>Kilo</option>
+                                                </select>`);
+
+                // Change the button to "Save" and add a class for identification
+                $(this).text('Save').addClass('save-button').removeClass('update-button');
+
+                // Add a cancel button
+                row.append('<td><button class="cancel-button btn btn-secondary" data-id="' + recipeIngredientId + '">Cancel</button></td>');
+            });
+
+            $(document).on('click', '.cancel-button', function () {
+                var recipeIngredientId = $(this).data("id");
+                var row = $('#ingredient-row-' + recipeIngredientId);
+
+                // Convert input fields back to spans with original text
+                var name = row.find('.edit-name').val();
+                var amount = row.find('.edit-amount').val();
+                var unit = row.find('.edit-unit').val();
+
+                row.find('.Name').html(name);
+                row.find('.Amount').html(amount);
+                row.find('.Unit').html(unit);
+
+                // Remove the cancel button and change the save button back to update button
+                $(this).closest('td').remove();
+                var saveButton = row.find('.save-button');
+                saveButton.text('Update').addClass('update-button').removeClass('save-button');
+            });
+
+            $(document).on('click', '.save-button', function () {
+                var recipeIngredientId = $(this).data("id");
+                var row = $('#ingredient-row-' + recipeIngredientId);
+
+                // Retrieve updated values
+                var updatedName = row.find('.edit-name').val();
+                var updatedAmount = row.find('.edit-amount').val();
+                var updatedUnit = row.find('.edit-unit').val();
+
+                $.ajax({
+                    url: '@Url.Action("UpdateIngredient", "Recipe")',
+                    type: 'POST',
+                    data: {
+                        RecipeIngredientId: recipeIngredientId,
+                        Name: updatedName,
+                        Amount: updatedAmount,
+                        Unit: updatedUnit
+                    },
+                    success: function (result) {
+                        if (result.success) {
+                            // Update the row with new values
+                            row.find('.Name').html(result.updatedName);
+                            row.find('.Amount').html(result.updatedAmount);
+                            row.find('.Unit').html(result.updatedUnit);
+
+                            // Remove the cancel button and change the save button back to update button
+                            row.find('.cancel-button').closest('td').remove();
+                            var saveButton = row.find('.save-button');
+                            saveButton.text('Update').addClass('update-button').removeClass('save-button');
+                        } else {
+                            alert(result.message);
+                        }
+                    },
+                    error: function (err) {
+                        console.error("Failed to update ingredient:", err);
+                    }
+                });
+            });
+
+            $(document).on('click', '.add-button', function () {
+                var recipeId = $(this).closest('div.recipe').data("recipe-id");
+                var ingredientId = $(this).closest('.ingredient-addition').find('#new-ingredient-id').val();
+                var amount = $(this).closest('.ingredient-addition').find('#new-amount').val();
+                var unitId = $(this).closest('.ingredient-addition').find('#new-unit-id').val();
+
+                $.ajax({
+                    url: '@Url.Action("AddIngredient", "Recipe")',
+                    type: 'POST',
+                    data: {
+                        RecipeId: recipeId,
+                        IngredientId: ingredientId,
+                        Amount: amount,
+                        UnitId: unitId
+                    },
+                    success: function (result) {
+                        if (result.success) {
+                            var newRow = `<tr id="ingredient-row-${result.newIngredientId}">
+                                                     <td class="Name">${result.ingredientName}</td>
+                                                     <td class="Amount">${amount}</td>
+                                                     <td class="Unit">${result.unitName}</td>
+                                                     <td>
+                                                         <button class="delete-button btn btn-danger" data-id="${result.newIngredientId}" type="button">Delete</button>
+                                                     </td>
+                                                     <td>
+                                                         <button class="update-button btn btn-primary" data-id="${result.newIngredientId}" type="button">Update</button>
+                                                     </td>
+                                                 </tr>`;
+                            $("#cntIngredientBody-" + recipeId).append($(newRow));
+
+                            // Clear the form fields
+                            $(this).closest('.ingredient-addition').find('#new-ingredient-id').val('');
+                            $(this).closest('.ingredient-addition').find('#new-amount').val('');
+                            $(this).closest('.ingredient-addition').find('#new-unit-id').val('');
+                        } else {
+                            alert(result.message);
+                        }
+                    },
+                    error: function (err) {
+                        console.error("Failed to add ingredient:", err);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

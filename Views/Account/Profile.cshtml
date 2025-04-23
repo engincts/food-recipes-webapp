@@ -1,0 +1,109 @@
+﻿@model UserProfileViewModel
+
+<div class="container">
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["ErrorMessage"]
+        </div>
+    }
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["SuccessMessage"]
+        </div>
+    }
+
+    <h2>User Profile</h2>
+    <div class="form-group">
+        <label for="userName">Name</label>
+        <input type="text" class="form-control" id="userName" value="@Model.UserName" readonly />
+    </div>
+
+    @if (Model.UserRole == "Admin" || Model.UserRole == "Moderator")
+    {
+        <form action="/Account/DeleteUser" method="post">
+            @Html.AntiForgeryToken()
+            <button type="submit" class="btn btn-danger">Delete the Account</button>
+        </form>
+    }
+
+    <button type="button" id="location" class="btn btn-primary">Share your location</button>
+    @if (Model.UserRole == "Moderator")
+    {
+        <button type="button" id="ShowUsers" class="btn btn-primary">Show Users</button>
+    }
+    @if (Model.UserRole == "Admin")
+    {
+        <button type="button" id="ShowAllUsers" class="btn btn-primary">Show All Users</button>
+    }
+</div>
+<div class="form-group">
+    <button type="button" id="ChangePassword" class="btn btn-dark">Change Password</button>
+</div>
+<div id="usersList" style="display: none;"></div>
+
+
+<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+<script>
+
+    $(document).ready(function () {
+        $('#ShowUsers').click(function () {
+            $.ajax({
+                url: '@Url.Action("ViewUsers", "Account")',
+                type: 'GET',
+                success: function (data) {
+                    if (Array.isArray(data)) { // Data'nın bir dizi olduğundan emin olun
+                        var html = '<ul>';
+                        data.forEach(function (item) {
+                            // Verilerin doğru formatta olduğunu kontrol edin
+                            html += '<li>' + (item.userName || 'No Name') + ' - ' + (item.email || 'No Email') + '</li>';
+                        });
+                        html += '</ul>';
+                        $('#usersList').html(html).show();
+                    } else {
+                        alert('Unexpected data format.');
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load users: ' + error);
+                }
+            });
+        });
+
+        $('#ShowAllUsers').click(function () {
+            $.ajax({
+                url: '@Url.Action("ViewAllUsers", "Account")',
+                type: 'GET',
+                success: function (data) {
+                    if (Array.isArray(data)) { // Data'nın bir dizi olduğundan emin olun
+                        var html = '<ul>';
+                        data.forEach(function (item) {
+                            // Verilerin doğru formatta olduğunu kontrol edin
+                            html += '<li>' + (item.userName || 'No Name') + ' - ' + (item.email || 'No Email') + '</li>';
+                        });
+                        html += '</ul>';
+                        $('#usersList').html(html).show();
+                    } else {
+                        alert('Unexpected data format.');
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load all users: ' + error);
+                }
+            });
+        });
+        $("#ChangePassword").click(function ()){
+            $.ajax({
+                URL: '@Url.Action("ChangePassword","Account")',
+                type: 'POST',
+            });
+        }
+
+        $("#location").click(function () {
+            window.location.href = "https://localhost:44390/Account/Login?ReturnUrl=%2F";
+        });
+    });
+
+</script>

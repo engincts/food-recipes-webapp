@@ -1,0 +1,109 @@
+﻿<style>
+    .privacy-policy-container {
+        padding: 20px;
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .container {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    h1 {
+        font-size: 2.5em;
+        margin-bottom: 20px;
+        color: #343a40;
+        text-align: center;
+    }
+
+    .policy-section {
+        margin-bottom: 20px;
+    }
+
+    h2 {
+        font-size: 1.8em;
+        color: #495057;
+        margin-bottom: 10px;
+    }
+
+    p {
+        font-size: 1.2em;
+        color: #6c757d;
+        line-height: 1.6;
+    }
+
+    .button-container {
+        text-align: center;
+        margin-top: 30px;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        border-color: #007bff;
+        padding: 10px 20px;
+        font-size: 1.2em;
+        color: #fff;
+        cursor: pointer;
+        border-radius: 5px;
+    }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #004085;
+        }
+</style>
+@{
+    ViewData["Title"] = "Privacy Policy";
+}
+<section id="app" class="privacy-policy-container">
+    <div class="container">
+        <h1>{{ title }}</h1>
+        <div v-for="(section, index) in policySections" :key="index" class="policy-section">
+            <h2>{{ section.heading }}</h2>
+            <p>{{ section.content }}</p>
+        </div>
+        <div class="button-container">
+          @*   <button @click="goToContact" class="btn btn-primary">Contact Us</button> *@
+        </div>
+    </div>
+</section>
+
+<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+<script>
+    const app = Vue.createApp({
+        data() {
+            return {
+                title: '@ViewData["Title"]',
+                policySections: [
+                    {
+                        heading: 'Introduction',
+                        content: 'We value your privacy and are committed to protecting your personal data. This Privacy Policy explains how we handle your information.'
+                    },
+                    {
+                        heading: 'Data Collection',
+                        content: 'We collect various types of information in connection with the services we provide, including information you provide directly to us and information we collect automatically.'
+                    },
+                    {
+                        heading: 'Data Usage',
+                        content: 'The data we collect is used to provide, maintain, and improve our services. We do not share your personal information with third parties without your consent.'
+                    },
+                    {
+                        heading: 'Your Rights',
+                        content: 'You have the right to access, correct, or delete your personal data. If you have any questions about our Privacy Policy, please contact us.'
+                    }
+                ]
+            }
+        },
+        methods: {
+            goToContact() {
+                window.location.href = '/Contact'; // Replace with the actual URL of your contact page
+            }
+        }
+    });
+
+    app.mount('#app');
+</script>
+
+

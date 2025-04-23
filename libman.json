@@ -1,0 +1,13 @@
+{
+  "version": "1.0",
+  "defaultProvider": "cdnjs",
+  "libraries": [
+    {
+      "library": "vue@3.4.35",
+      "destination": "wwwroot/lib/vue/",
+      "files": [
+        "vue.cjs.js"
+      ]
+    }
+  ]
+}

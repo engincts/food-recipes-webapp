@@ -1,0 +1,37 @@
+﻿@model RecipeViewModel
+
+<h2>@Model.RecipeName - Ingredients</h2>
+
+@if (TempData["Message"] != null)
+{
+    <div class="alert alert-warning">
+        @TempData["Message"]
+    </div>
+}
+
+@if (Model.Ingredients != null && Model.Ingredients.Any())
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Amount</th>
+                <th>Unit</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var ingredient in Model.Ingredients)
+            {
+                <tr>
+                    <td>@ingredient.Name</td>
+                    <td>@ingredient.Amount</td>
+                    <td>@ingredient.Unit</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No ingredients available.</p>
+}

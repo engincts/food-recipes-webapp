@@ -1,0 +1,98 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        #app {
+         
+            padding: 20px;
+            width: 500px;
+            border: black dashed 1px;
+            font-size: large;
+            margin:auto;
+
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+
+        input, textarea {
+            width: 100%;
+            margin-top: 5px;
+            padding: 5px;
+        }
+
+        .btn {
+            margin-top: 10px;
+            padding: 10px;
+            width: 100px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            color: white;
+        }
+
+        .btn-submit {
+            background-color: #4CAF50; /* Green */
+        }
+
+        .btn-cancel {
+            background-color: #f44336; /* Red */
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <h1>{{ message }}</h1>
+        <label for="name">Name</label>
+        <input id="name" v-model="name" placeholder="Name">
+
+        <label for="surname">Surname</label>
+        <input id="surname" v-model="surname" placeholder="Surname">
+
+        <label for="comment">Your Comment</label>
+        <textarea id="comment" v-model="comment" placeholder="Your Comment"></textarea>
+
+        <p v-if="nameIncludesSubstring"><strong>Name:</strong> {{ name }}</p>
+        <p><strong>Surname:</strong> {{ surname }}</p>
+        <p><strong>Comment:</strong> {{ comment }}</p>
+        <button :class="['btn', 'btn-submit']" v-on:click="submit">Submit</button>
+        <button :class="['btn', 'btn-cancel']" v-on:click="cancel">Cancel</button>
+    </div>
+
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+
+    <script>
+        const app = Vue.createApp({
+            data() {
+                return {
+                    message: "Contact Page",
+                    name: '',
+                    surname: '',
+                    comment: ''
+                }
+            },
+            computed: {
+                nameIncludesSubstring() {
+                    return this.name.includes("text");  // Change "text" to the substring you want to check
+                }
+            },
+            methods: {
+                submit(event) {
+                    console.log("Name: " + this.name);
+                    console.log("Surname: " + this.surname);
+                    console.log("Comment: " + this.comment);
+                },
+                cancel(event) {
+                    this.name = '';
+                    this.surname = '';
+                    this.comment = '';
+                }
+            }
+        });
+
+        app.mount('#app');
+    </script>
+</body>
+</html>
